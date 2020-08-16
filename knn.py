@@ -1,36 +1,10 @@
-print("knn.py")
-from sklearn.datasets import make_blobs, make_classification
+print("knn")
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
-from sklearn import neighbors, datasets
-
-n_neighbors = 21
-n_classes = 2
-
-
-X, y = make_blobs(
-    n_samples=1000,
-    centers=n_classes,
-    n_features=n_classes,
-    random_state=0,
-    cluster_std=5.0,
-)
-
-data = np.hstack((X, y[:, np.newaxis]))
-np.random.shuffle(data)
-
-split_rate = 0.7
-
-train, test = np.split(data, [int(split_rate * (data.shape[0]))])
-
-X_train = train[:, :-1]
-y_train = train[:, -1]
-print("len(train):", len(y_train))
-
-X_test = test[:, :-1]
-y_test = test[:, -1]
-print("len(test):", len(y_test))
+from sklearn import datasets
+from data import make_data
+from plot import plot
 
 
 class KNN:
@@ -118,33 +92,10 @@ class KNN:
         return float(sum(y_pred == y_test)) / float(len(y_test))
 
 
-def plot(model: KNN, X_test: np.array, y_test: np.array, grid_step=0.2):
-    cmap_light = ListedColormap(["#FFAAAA", "#AAFFAA"])
-    cmap_bold = ListedColormap(["#FF0000", "#00FF00"])
-    # calculate min, max and limits
-    x_min, x_max = X_test.min() - 1, X_test.max() + 1
-    y_min, y_max = y_test.min() - 1, y_test.max() + 1
-    xx, yy = np.meshgrid(
-        np.arange(x_min, x_max, grid_step), np.arange(y_min, y_max, grid_step)
-    )
+n_neighbors = 21
+n_classes = 2
 
-    # predict class using data and kNN classifier
-    Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
-
-    # Put the result into a color plot
-    Z = Z.reshape(xx.shape)
-
-    plt.figure()
-    plt.pcolormesh(xx, yy, Z, cmap=cmap_light)
-
-    # Plot also the training points
-
-    plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap=cmap_bold)
-    plt.xlim(xx.min(), xx.max())
-    plt.ylim(yy.min(), yy.max())
-    plt.title("2-Class classification (k = %i)" % (n_neighbors))
-    plt.show()
-
+X_train, y_train, X_test, y_test = make_data(n_samples=1000)
 
 knn = KNN(X_train, y_train, n_neighbors=n_neighbors, weights="distance")
 plot(knn, X_test, y_test)
