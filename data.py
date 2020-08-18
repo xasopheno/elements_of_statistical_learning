@@ -7,8 +7,8 @@ def make_data(n_samples, n_classes=2):
         n_samples=n_samples,
         centers=n_classes,
         n_features=n_classes,
-        random_state=0,
-        cluster_std=5.0,
+        random_state=1,
+        cluster_std=2.0,
     )
 
     data = np.hstack((X, y[:, np.newaxis]))

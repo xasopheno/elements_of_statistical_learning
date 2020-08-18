@@ -7,49 +7,38 @@ from sklearn import neighbors, datasets
 from data import make_data
 from plot import plot
 
-#  β=(X.T*X)^−1 * X.T * y
 
-X_train, y_train, X_test, y_test = make_data(n_samples=6)
+class LeastSquares:
+    def __init__(self, X_train, y_train):
+        self.X_train, self.y_train = X_train, y_train
+        self.beta_hat = None
 
-intercept = np.ones(shape=y_train.shape).reshape(-1, 1)
-print("intercept:", intercept)
-X_train = np.concatenate((X_train, intercept), 1)
-print("\nX_train\n", X_train)
-print(X_train.shape)
+    def find_coeffs(self):
+        #  β=(X.T*X)^−1 * X.T * y
+        intercept = np.ones(shape=self.y_train.shape).reshape(-1, 1)
+        self.X_train = np.concatenate((X_train, intercept), 1)
 
-a = X_train.T
-print("\nX_train.T\n", a)
-print(a.shape)
-a = a.dot(X_train)
-print("\nX_train.T.dot(X_train)\n", a)
-print(a.shape)
-a = inv(a)
-print("\nX_train.T.dot(X_train)*-1\n", a)
-print(a.shape)
+        self.beta_hat = (
+            inv(self.X_train.transpose().dot(self.X_train))
+            .dot(self.X_train.transpose())
+            .dot(self.y_train)
+        )
 
-a = a.dot(X_train.T)
-print("\nX_train.T * (X_train)*-1 * X_train.T\n", a)
-a = a.dot(y_train)
-print("\nX_train.T * (X_train)*-1 * X_train.T * y_train\n", a)
+        print("\nβ_hat\n", self.beta_hat)
+        intercept = np.ones(shape=self.y_train.shape).reshape(-1, 1)
 
-beta_hat = inv(X_train.transpose().dot(X_train)).dot(X_train.transpose()).dot(y_train)
-print("\nbeta hat\n", beta_hat)
+    def predict(self, X_test):
+        intercept = np.ones(shape=X_test.shape[0]).reshape(-1, 1)
+        X_test = np.concatenate((X_test, intercept), 1)
 
-#  print("\nlinalg\n", np.linalg.lstsq(X_train, y_train, rcond=None))
-
-print("\ny_hat = X_train * beta_hat)\n", X_train.dot(beta_hat))
-print("\ny_train", y_train)
-print("++++++++++++")
-
-a = np.array([[1, 2], [4, 4]])
-print(a)
-print(a.T)
-print(a.T.dot(a))
-print(inv(a.T.dot(a)))
-print(inv(a).dot(a))
+        return X_test.dot(self.beta_hat)
 
 
-#  knn = KNN(X_train, y_train, n_neighbors=n_neighbors, weights="distance")
-#  plot(knn, X_test, y_test)
+X_train, y_train, X_test, y_test = make_data(n_samples=10000)
+
+least_squares = LeastSquares(X_train, y_train)
+least_squares.find_coeffs()
+plot(least_squares, X_test, y_test)
 #  score = knn.score(X_test, y_test)
 #  print(score)
+
