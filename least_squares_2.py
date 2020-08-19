@@ -1,4 +1,4 @@
-print("least_squares_2")
+print("least_squares")
 import numpy as np
 from numpy.linalg import inv
 import matplotlib.pyplot as plt
@@ -6,6 +6,13 @@ from matplotlib.colors import ListedColormap
 from sklearn import neighbors, datasets
 from data import make_data
 from plot import plot
+
+#  (X^-1 * X.T) * y
+# X * X.T
+# [
+#   [1, 3],
+#   [2, 4]
+#  ... ]
 
 #  β=(X.T*X)^−1 * X.T * y
 
@@ -41,12 +48,35 @@ print("\ny_hat = X_train * beta_hat)\n", X_train.dot(beta_hat))
 print("\ny_train", y_train)
 print("++++++++++++")
 
-a = np.array([[1, 2], [4, 4]])
-print(a)
-print(a.T)
-print(a.T.dot(a))
-print(inv(a.T.dot(a)))
-print(inv(a).dot(a))
+m = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+y = np.array([1, 2, 3])
+
+#  y.T * y = norm^2
+
+
+print(y.T)
+print(m.T)
+print(m)
+print(y)
+
+#  v.T * v =inner product
+
+#  v.T * m.T * m * v
+
+#  x = m * y
+#  x.T = y.T * m.T
+#  x.T * x = norm of y in m.T space
+
+#  print(y.T * (m.T * m) * y)
+
+#  y.T * y = norm_squared of y
+#  m.T * norm_y * m = norm of y in vector space of m
+
+#  print(a)
+#  print(a.T)
+#  print(a.T.dot(a))
+#  print(inv(a.T.dot(a)))
+#  print(inv(a).dot(a))
 
 
 #  knn = KNN(X_train, y_train, n_neighbors=n_neighbors, weights="distance")
